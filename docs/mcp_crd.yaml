@@ -1,0 +1,140 @@
+# MCPServer Custom Resource Definition Schema
+# Format: key: value_type
+
+apiVersion: string
+kind: string
+metadata:
+  name: string
+  namespace: string
+  labels: map[string]string
+  annotations: map[string]string
+
+spec:
+  # Transport type for the MCP server
+  # Enum: stdio, http
+  transportType: string
+
+  # Deployment configuration
+  deployment:
+    image: string
+    imagePullPolicy: string  # Enum: Always, Never, IfNotPresent
+    port: uint16  # Default: 3000
+    cmd: string
+    args: []string
+    env: map[string]string
+    labels: map[string]string
+    annotations: map[string]string
+    replicas: int32  # Default: 1
+    nodeSelector: map[string]string
+
+    # Secret references (injected as envFrom)
+    secretRefs:
+      - name: string
+
+    # ConfigMap references (mounted as volumes)
+    configMapRefs:
+      - name: string
+
+    # Image pull secrets for private registries
+    imagePullSecrets:
+      - name: string
+
+    # Volume mounts for the MCP server container
+    volumeMounts:
+      - name: string
+        mountPath: string
+        subPath: string
+        readOnly: bool
+
+    # Custom volumes
+    volumes:
+      - name: string
+        # Plus standard K8s volume source fields
+
+    # Init container configuration (for stdio transport)
+    initContainer:
+      image: string
+      imagePullPolicy: string  # Enum: Always, Never, IfNotPresent
+      resources:
+        requests:
+          cpu: string
+          memory: string
+        limits:
+          cpu: string
+          memory: string
+      securityContext:
+        runAsUser: int64
+        runAsGroup: int64
+        runAsNonRoot: bool
+        readOnlyRootFilesystem: bool
+        allowPrivilegeEscalation: bool
+
+    # ServiceAccount configuration
+    serviceAccount:
+      annotations: map[string]string
+      labels: map[string]string
+
+    # Sidecar containers
+    sidecars:
+      - name: string
+        image: string
+        # Plus standard K8s container fields
+
+    # Resource requirements for the main container
+    resources:
+      requests:
+        cpu: string
+        memory: string
+      limits:
+        cpu: string
+        memory: string
+
+    # Container-level security context
+    securityContext:
+      runAsUser: int64
+      runAsGroup: int64
+      runAsNonRoot: bool
+      readOnlyRootFilesystem: bool
+      allowPrivilegeEscalation: bool
+      capabilities:
+        add: []string
+        drop: []string
+
+    # Pod-level security context
+    podSecurityContext:
+      runAsUser: int64
+      runAsGroup: int64
+      fsGroup: int64
+      seccompProfile:
+        type: string
+
+    # Tolerations for pod scheduling
+    tolerations:
+      - key: string
+        operator: string
+        value: string
+        effect: string
+        tolerationSeconds: int64
+
+    # Affinity rules for pod placement
+    affinity:
+      nodeAffinity: {}
+      podAffinity: {}
+      podAntiAffinity: {}
+
+  # STDIO transport configuration
+  stdioTransport: {}
+
+  # HTTP transport configuration
+  httpTransport:
+    targetPort: uint32
+    path: string
+
+status:
+  observedGeneration: int64
+  conditions:
+    - type: string  # Accepted, ResolvedRefs, Programmed, Ready
+      status: string  # True, False, Unknown
+      reason: string
+      message: string
+      lastTransitionTime: string
